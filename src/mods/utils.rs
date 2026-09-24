@@ -16,7 +16,8 @@ extern "C" fn callback(_signum: i32) {
 
 pub fn sig_handler_init() {
     unsafe {
-        if libc::signal(libc::SIGINT, callback as libc::sighandler_t) == libc::SIG_ERR {
+        if libc::signal(libc::SIGINT, callback as *const () as libc::sighandler_t) == libc::SIG_ERR
+        {
             unreachable!()
         }
     }
@@ -27,7 +28,7 @@ pub fn ctrlc_poll() -> bool {
 }
 
 pub fn ncurses_init() {
-    setlocale(LcCategory::all, "");
+    setlocale(LcCategory::all, "").expect("Failed to set locale");
     // Init ncurses
     initscr();
     // raw();

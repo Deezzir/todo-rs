@@ -1,4 +1,4 @@
-use std::cmp::{min, Ordering};
+use std::cmp::{Ordering, min};
 use std::fmt;
 use std::fs::File;
 use std::io::{self, BufRead, Write};
@@ -376,12 +376,11 @@ impl List {
         assert!(from <= to, "from must be less or equal than to");
 
         for item in self.list.iter_mut().skip(from).take(to - from) {
-            if item.parent > parent {
-                if let Some(p) = item.parent {
-                    if p as isize + by >= 0 {
-                        item.parent = Some((p as isize + by) as usize);
-                    }
-                }
+            if item.parent > parent
+                && let Some(p) = item.parent
+                && p as isize + by >= 0
+            {
+                item.parent = Some((p as isize + by) as usize);
             }
 
             let parent = parent.unwrap_or(0);
@@ -394,10 +393,10 @@ impl List {
     }
 
     fn insert(&mut self) -> Result<(), &'static str> {
-        if let Some(item) = self.get_cur_item() {
-            if item.parent.is_some() {
-                return Err("Can't insert item. Current item is a subtask.");
-            }
+        if let Some(item) = self.get_cur_item()
+            && item.parent.is_some()
+        {
+            return Err("Can't insert item. Current item is a subtask.");
         }
 
         let item = Item::new(String::new(), Local::now(), None, 1);
@@ -610,18 +609,18 @@ impl TodoApp {
     }
 
     pub fn is_cur_todo(&self, todo: &Item) -> bool {
-        self.todos.get_cur_item().map_or(false, |t| t == todo)
+        self.todos.get_cur_item() == Some(todo)
     }
 
     pub fn is_cur_done(&self, done: &Item) -> bool {
-        self.dones.get_cur_item().map_or(false, |d| d == done)
+        self.dones.get_cur_item() == Some(done)
     }
 
     pub fn get_message(&self) -> &String {
         &self.message
     }
 
-    pub fn iter_todos(&self) -> ListIter {
+    pub fn iter_todos(&self) -> ListIter<'_> {
         ListIter {
             obj: &self.todos,
             cur: 0,
@@ -641,7 +640,7 @@ impl TodoApp {
         }
     }
 
-    pub fn iter_dones(&self) -> ListIter {
+    pub fn iter_dones(&self) -> ListIter<'_> {
         ListIter {
             obj: &self.dones,
             cur: 0,
@@ -826,15 +825,15 @@ impl TodoApp {
         self.hide_subs = !self.hide_subs;
 
         if self.hide_subs {
-            if let Some(cur_todo) = self.todos.get_cur_item() {
-                if !cur_todo.is_root() {
-                    self.todos.up(!self.hide_subs);
-                }
+            if let Some(cur_todo) = self.todos.get_cur_item()
+                && !cur_todo.is_root()
+            {
+                self.todos.up(!self.hide_subs);
             }
-            if let Some(cur_done) = self.dones.get_cur_item() {
-                if !cur_done.is_root() {
-                    self.dones.up(!self.hide_subs);
-                }
+            if let Some(cur_done) = self.dones.get_cur_item()
+                && !cur_done.is_root()
+            {
+                self.dones.up(!self.hide_subs);
             }
         }
     }

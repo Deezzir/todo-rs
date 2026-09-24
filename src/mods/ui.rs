@@ -220,7 +220,7 @@ impl UI {
         let text = truncate(text, layout.borrow().max_size.x as usize);
 
         mv(pos.y, pos.x);
-        addstr(&format!("{text}{space_fill}"));
+        addstr(&format!("{text}{space_fill}")).expect("Failed to add string in UI label");
 
         layout
             .borrow_mut()
@@ -251,7 +251,8 @@ impl UI {
         // Buffer
         {
             mv(pos.y, pos.x);
-            addstr(&format!("{prefix}{text}{space_fill}"));
+            addstr(&format!("{prefix}{text}{space_fill}"))
+                .expect("Failed to add string in UI edit_label");
             layout
                 .borrow_mut()
                 .add_widget(Vec2::new(text.len() as i32, 1));
@@ -259,9 +260,10 @@ impl UI {
         // Cursor
         {
             mv(pos.y, pos.x + cur as i32 + prefix.len() as i32);
-            attr_on(A_REVERSE());
-            addstr(text.get(cur..=cur).unwrap_or(" "));
-            attr_off(A_REVERSE());
+            attr_on(A_REVERSE);
+            addstr(text.get(cur..=cur).unwrap_or(" "))
+                .expect("Failed to add string in UI edit_label");
+            attr_off(A_REVERSE);
         }
     }
 
@@ -277,14 +279,14 @@ impl UI {
             .borrow_mut()
             .add_child(Rc::clone(&child));
 
-        if let Some(Vec2 { x: _, y }) = size_diff {
-            if y > 0 {
-                let pos = child.borrow().available_pos();
-                let space_fill = " ".repeat(child.borrow().max_size.x as usize);
-                for i in 0..y {
-                    mv(pos.y + i, pos.x);
-                    addstr(&space_fill.to_string());
-                }
+        if let Some(Vec2 { x: _, y }) = size_diff
+            && y > 0
+        {
+            let pos = child.borrow().available_pos();
+            let space_fill = " ".repeat(child.borrow().max_size.x as usize);
+            for i in 0..y {
+                mv(pos.y + i, pos.x);
+                addstr(&space_fill.to_string()).expect("Failed to add string in UI end_layout");
             }
         }
     }

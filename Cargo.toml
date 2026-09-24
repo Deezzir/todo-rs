@@ -1,12 +1,12 @@
 [package]
 name = "todors"
 authors = ["Iurii Kondrakov <deezzir@gmail.com>"]
-version = "2.0.0"
+version = "2.0.1"
 description = "Interactive TODO application in terminal"
-edition = "2021"
+edition = "2024"
 
 [dependencies]
-regex = "1.3.9"
-chrono = "0.4.23"
-ncurses = { version = "5.101.0", features = ["wide"] }
-libc = "0.2.97"
+regex = "1.13.1"
+chrono = "0.4.45"
+ncurses = { version = "6.0.1", features = ["wide"] }
+libc = "0.2.189"

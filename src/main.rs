@@ -105,20 +105,20 @@ fn main() {
                                 app.get_dones_n(false)
                             ),
                             UI_PAIR,
-                            Some(A_BOLD()),
+                            Some(A_BOLD),
                         );
                         ui.label_styled(
                             &format!("[MESSAGE]: {}", app.get_message()),
                             UI_PAIR,
-                            Some(A_BOLD()),
+                            Some(A_BOLD),
                         );
                     }
                     ui.end_layout();
 
                     ui.begin_layout(LayoutKind::Vert);
                     {
-                        ui.label_styled(&format!("[DATE]: {date}"), UI_PAIR, Some(A_BOLD()));
-                        ui.label_styled(&format!("[FILE]: {file_name}"), UI_PAIR, Some(A_BOLD()));
+                        ui.label_styled(&format!("[DATE]: {date}"), UI_PAIR, Some(A_BOLD));
+                        ui.label_styled(&format!("[FILE]: {file_name}"), UI_PAIR, Some(A_BOLD));
                     }
                     ui.end_layout();
                 }
@@ -214,7 +214,7 @@ fn main() {
     endwin();
     app.save(&file_path).unwrap();
 
-    println!("[INFO]: Saved to '{file_path}', Bye!");
+    println!("Saved to '{file_path}', Bye!");
 
     if cfg!(debug_assertions) {
         println!("{app:#?}");
